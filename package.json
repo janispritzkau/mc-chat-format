@@ -5,7 +5,7 @@
   "main": "lib",
   "types": "lib",
   "scripts": {
-    "prepublish": "tsc"
+    "prepare": "tsc"
   },
   "keywords": [
     "minecraft",
