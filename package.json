@@ -1,0 +1,21 @@
+{
+  "name": "mc-chat-format",
+  "version": "0.1.0",
+  "description": "Convert minecraft json chat component to text",
+  "main": "lib",
+  "types": "lib",
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "keywords": [
+    "minecraft",
+    "chat",
+    "json"
+  ],
+  "author": "Janis Pritzkau",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^11.9.4",
+    "typescript": "^3.3.3"
+  }
+}
