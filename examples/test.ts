@@ -8,6 +8,6 @@ console.log(chatToText({
 }))
 
 console.log(chatToText({
-    translation: "chat.type.text",
+    translate: "chat.type.text",
     with: ["Notch", "Hello!"]
 }))

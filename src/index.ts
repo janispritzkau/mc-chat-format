@@ -9,8 +9,10 @@ export function chatToText(component: any): string {
         return component.map(x => chatToText(x)).join("")
     } else if (component.text != null) {
         return component.text + chatToText(component.extra)
-    } else if (component.translation) {
-        return translations[component.translation].split("%s").map((x, i) => {
+    } else if (component.translate) {
+        const translation = translations[component.translate]
+        if (!translation) return "[Missing translation]"
+        return translations[component.translate].split("%s").map((x, i) => {
             return i == 0 ? x : component.with[i - 1] + x
         }).join("")
     }
