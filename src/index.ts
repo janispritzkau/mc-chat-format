@@ -12,8 +12,11 @@ export function chatToText(component: any): string {
     } else if (component.translate) {
         const translation = translations[component.translate]
         if (!translation) return "[Missing translation]"
-        return translations[component.translate].split("%s").map((x, i) => {
-            return i == 0 ? x : chatToText(component.with[i - 1]) + x
+        const match = translation.match(/%([0-9]\$)?s/g)
+        if (!match) return translation
+        const order = match.map((x, i) => x.length == 2 ? i : parseInt(x[1]) - 1)
+        return translation.split(/%(?:[0-9]\$)?s/).map((x, i) => {
+            return i == 0 ? x : chatToText(component.with[order[i - 1]]) + x
         }).join("")
     }
     throw new Error("Unknown component type: " + JSON.stringify(component))

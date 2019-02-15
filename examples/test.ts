@@ -11,3 +11,8 @@ console.log(chatToText({
     translate: "chat.type.text",
     with: ["Notch", "Hello!"]
 }))
+
+console.log(chatToText({
+    translate: "death.attack.cramming.player",
+    with: ["Evanry", { translate: "block.minecraft.diorite" }]
+}))
