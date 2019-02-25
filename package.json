@@ -1,6 +1,6 @@
 {
   "name": "mc-chat-format",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Convert minecraft json chat component to text",
   "repository": {
     "type": "git",
