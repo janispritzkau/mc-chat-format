@@ -94,9 +94,9 @@ export function flatten(component: StringComponent): StringComponent[] {
     const { text, extra, ...rest } = component
     const array = [{ text, ...rest }]
 
-    if (extra) array.push(...extra.map(x => flatten(<any>x).map(x => ({
+    if (extra) array.push(...flattenArray(extra.map(x => flatten(<any>x).map(x => ({
         ...x, ...rest, ...x
-    }))).flat())
+    })))))
 
     return array
 }
@@ -136,6 +136,10 @@ function colorToAnsiCode(color?: string) {
         default:             code = "\x1b[0"
     }
     return code + "m"
+}
+
+function flattenArray<T>(array: T[][]) {
+    return (<T[]>[]).concat(...array)
 }
 
 /** @deprecated Use `format(convert(component))` instead */
