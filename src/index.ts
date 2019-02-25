@@ -25,8 +25,7 @@ export interface TranslationComponent extends Shared {
     with?: Component[]
 }
 
-interface FormatOptions {
-    translation?: Translation
+interface FormatOptions extends ConvertOptions {
     useAnsiCodes?: boolean
 }
 
@@ -40,6 +39,7 @@ export function format(component: Component, options: FormatOptions = {}) {
 interface ConvertOptions {
     translation?: Translation
     stripNonText?: boolean
+    strict?: boolean
 }
 
 /**
@@ -48,6 +48,7 @@ interface ConvertOptions {
 */
 export function convert(component: Component, options: ConvertOptions = {}): StringComponent {
     if (!options.translation) options.translation = defaultTranslation
+    if (options.strict == null) options.strict = true
 
     if (typeof component == "string") return { text: component }
 
@@ -65,7 +66,8 @@ export function convert(component: Component, options: ConvertOptions = {}): Str
         const { translate, with: _with, ...rest } = component
 
         const translation = options.translation[translate]
-        if (!translation) return { text: "[Missing translation]", ...rest }
+        if (!translation) if (options.strict) throw new Error(`Couldn't find translation for ${translate}`)
+        else return { text: "[Missing translation]", ...rest }
 
         const match = translation.match(/%([0-9]\$)?s/g)
         if (!match) return { text: translation, ...rest }
