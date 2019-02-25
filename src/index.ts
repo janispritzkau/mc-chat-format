@@ -1,3 +1,4 @@
+require("array.prototype.flat").shim()
 const defaultTranslation: Translation = require("../assets/en_us.json")
 
 export type Translation = { [key: string]: string }
