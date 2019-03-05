@@ -112,33 +112,35 @@ export function formatString(component: StringComponent, useAnsiCodes = false) {
         return text + c.text + "\x1b[0m"
     }).join("")
 
+    const resetCodes = new Set<string>()
+
     return text.split(/§(.)/).map((t, i) => {
-        if (i % 2 == 0) {
-            return t
-        } else switch (t) {
-            case "l": return "\x1b[1m"
-            case "m": return "\x1b[9m"
-            case "n": return "\x1b[4m"
-            case "o": return "\x1b[3m"
-            case "r": return "\x1b[0m"
-            case "0": return "\x1b[38;2;0;0;0m"
-            case "1": return "\x1b[38;2;0;0;170m"
-            case "2": return "\x1b[38;2;0;170;0m"
-            case "3": return "\x1b[38;2;0;170;170m"
-            case "4": return "\x1b[38;2;170;0;0m"
-            case "5": return "\x1b[38;2;170;0;170m"
-            case "6": return "\x1b[38;2;255;170;0m"
-            case "7": return "\x1b[38;2;170;170;170m"
-            case "8": return "\x1b[38;2;85;85;85m"
-            case "9": return "\x1b[38;2;85;85;255m"
-            case "a": return "\x1b[38;2;85;255;85m"
-            case "b": return "\x1b[38;2;85;255;255m"
-            case "c": return "\x1b[38;2;255;85;85m"
-            case "d": return "\x1b[38;2;255;85;255m"
-            case "e": return "\x1b[38;2;255;255;85m"
-            case "f": return "\x1b[38;2;255;255;255m"
+        if (i % 2 == 0) return t
+        else switch (t) {
+            case "l": resetCodes.add("\x1b[22m"); return "\x1b[1m"
+            case "m": resetCodes.add("\x1b[29m"); return "\x1b[9m"
+            case "n": resetCodes.add("\x1b[24m"); return "\x1b[4m"
+            case "o": resetCodes.add("\x1b[23m"); return "\x1b[3m"
+            case "r": resetCodes.clear();         return "\x1b[0m"
+            case "0": t = "\x1b[38;2;0;0;0m"; break
+            case "1": t = "\x1b[38;2;0;0;170m"; break
+            case "2": t = "\x1b[38;2;0;170;0m"; break
+            case "3": t = "\x1b[38;2;0;170;170m"; break
+            case "4": t = "\x1b[38;2;170;0;0m"; break
+            case "5": t = "\x1b[38;2;170;0;170m"; break
+            case "6": t = "\x1b[38;2;255;170;0m"; break
+            case "7": t = "\x1b[38;2;170;170;170m"; break
+            case "8": t = "\x1b[38;2;85;85;85m"; break
+            case "9": t = "\x1b[38;2;85;85;255m"; break
+            case "a": t = "\x1b[38;2;85;255;85m"; break
+            case "b": t = "\x1b[38;2;85;255;255m"; break
+            case "c": t = "\x1b[38;2;255;85;85m"; break
+            case "d": t = "\x1b[38;2;255;85;255m"; break
+            case "e": t = "\x1b[38;2;255;255;85m"; break
+            case "f": t = "\x1b[38;2;255;255;255m"; break
         }
-    }).join("")
+        return t + [...resetCodes.values()].join("")
+    }).join("") + "\x1b[0m"
 }
 
 function colorToAnsiCode(color?: string) {
