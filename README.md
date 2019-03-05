@@ -1,17 +1,13 @@
 # Minecraft Chat Formatter
 
 ```js
-import { format } from "mc-chat-format"
+import { format, convert, flatten } from "mc-chat-format"
 
 format({
     translate: "death.attack.player.item",
     with: ["jeb_", "Notch", { translate: "item.minecraft.wooden_shovel" }]
 })
 // ⮡ 'jeb_ was slain by Notch using Wooden Shovel'
-```
-
-```js
-import { convert, flatten } from "mc-chat-format"
 
 flatten({ text: "1 ", extra: [{ text: "2", extra: [{ text: " 3" }] }] })
 // ⮡ [ { text: '1 ' }, { text: '2' }, { text: ' 3' } ]
