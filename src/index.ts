@@ -27,13 +27,27 @@ export interface TranslationComponent extends Shared {
 
 interface FormatOptions extends ConvertOptions {
     useAnsiCodes?: boolean
+    maxLineLength?: number
 }
 
 /**
  * Converts a Minecraft chat component to a formatted string.
  * */
 export function format(component: Component, options: FormatOptions = {}) {
-    return formatString(convert(component, options), options.useAnsiCodes)
+    const text = formatString(convert(component, options), options.useAnsiCodes)
+
+    if (options.maxLineLength) {
+        let t = "", e = false, l = 0
+        for (let c of text) {
+            if (c == "\x1b") e = true
+            else if (c == "m") e = false
+            else if (c == "\n") l = 0
+            t += c
+            if (l == options.maxLineLength) t += "\n", l = 0
+            if (!e) l += 1
+        }
+        return t
+    } else return text
 }
 
 interface ConvertOptions {
