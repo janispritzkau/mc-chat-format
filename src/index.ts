@@ -102,7 +102,7 @@ export function flatten(component: StringComponent): StringComponent[] {
 
 /** Converts a `StringComponent` to plain text and can format it using ANSI codes. */
 export function formatString(component: StringComponent, useAnsiCodes = false) {
-    return flatten(component).map(c => {
+    let text = flatten(component).map(c => {
         if (!useAnsiCodes) return c.text
         let text = colorToAnsiCode(c.color)
         if (c.bold) text += "\x1b[1m"
@@ -110,6 +110,34 @@ export function formatString(component: StringComponent, useAnsiCodes = false) {
         if (c.underlined) text += "\x1b[4m"
         if (c.strikethrough) text += "\x1b[9m"
         return text + c.text + "\x1b[0m"
+    }).join("")
+
+    return text.split(/§(.)/).map((t, i) => {
+        if (i % 2 == 0) {
+            return t
+        } else switch (t) {
+            case "l": return "\x1b[1m"
+            case "m": return "\x1b[9m"
+            case "n": return "\x1b[4m"
+            case "o": return "\x1b[3m"
+            case "r": return "\x1b[0m"
+            case "0": return "\x1b[38;2;0;0;0m"
+            case "1": return "\x1b[38;2;0;0;170m"
+            case "2": return "\x1b[38;2;0;170;0m"
+            case "3": return "\x1b[38;2;0;170;170m"
+            case "4": return "\x1b[38;2;170;0;0m"
+            case "5": return "\x1b[38;2;170;0;170m"
+            case "6": return "\x1b[38;2;255;170;0m"
+            case "7": return "\x1b[38;2;170;170;170m"
+            case "8": return "\x1b[38;2;85;85;85m"
+            case "9": return "\x1b[38;2;85;85;255m"
+            case "a": return "\x1b[38;2;85;255;85m"
+            case "b": return "\x1b[38;2;85;255;255m"
+            case "c": return "\x1b[38;2;255;85;85m"
+            case "d": return "\x1b[38;2;255;85;255m"
+            case "e": return "\x1b[38;2;255;255;85m"
+            case "f": return "\x1b[38;2;255;255;255m"
+        }
     }).join("")
 }
 

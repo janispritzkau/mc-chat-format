@@ -16,3 +16,19 @@ console.log(format({
     translate: "death.attack.cramming.player",
     with: ["Evanry", { translate: "block.minecraft.diorite" }]
 }))
+
+console.log(format({ text: `
+§nMinecraft Formatting
+
+§r§00 §11 §22 §33
+§44 §55 §66 §77
+§88 §99 §aa §bb
+§cc §dd §ee §ff
+
+§r§0k §kMinecraft
+§rl §lMinecraft
+§rm §mMinecraft
+§rn §nMinecraft
+§ro §oMinecraft
+§rr §rMinecraft
+`}))
