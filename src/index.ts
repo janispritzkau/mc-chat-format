@@ -116,14 +116,14 @@ export function flatten(component: StringComponent): StringComponent[] {
 
 /** Converts a `StringComponent` to plain text and can format it using ANSI codes. */
 export function formatString(component: StringComponent, useAnsiCodes = false) {
-    let text = flatten(component).map(c => {
+    let text = flatten(component).map((c) => {
         if (!useAnsiCodes) return c.text
-        let text = colorToAnsiCode(c.color)
-        if (c.bold) text += "\x1b[1m"
-        if (c.italic) text += "\x1b[3m"
-        if (c.underlined) text += "\x1b[4m"
-        if (c.strikethrough) text += "\x1b[9m"
-        return text + c.text + "\x1b[0m"
+        let codes = colorToAnsiCode(c.color)
+        if (c.bold) codes += "\x1b[1m"
+        if (c.italic) codes += "\x1b[3m"
+        if (c.underlined) codes += "\x1b[4m"
+        if (c.strikethrough) codes += "\x1b[9m"
+        return codes ? codes + c.text + "\x1b[0m" : c.text
     }).join("")
 
     if (!useAnsiCodes) return text
@@ -138,6 +138,7 @@ export function formatString(component: StringComponent, useAnsiCodes = false) {
             case "n": resetCodes.add("\x1b[24m"); return "\x1b[4m"
             case "o": resetCodes.add("\x1b[23m"); return "\x1b[3m"
             case "r": resetCodes.clear();         return "\x1b[0m"
+            case "k": t = ""; break
             case "0": t = "\x1b[38;2;0;0;0m"; break
             case "1": t = "\x1b[38;2;0;0;170m"; break
             case "2": t = "\x1b[38;2;0;170;0m"; break
@@ -158,11 +159,15 @@ export function formatString(component: StringComponent, useAnsiCodes = false) {
         return t + [...resetCodes.values()].join("")
     }).join("")
 
-    return text[0].endsWith("\x1b[0m") ? text : text + "\x1b[0m"
+    const index = text.lastIndexOf("\x1b[")
+    if (index == -1) return text
+
+    const code = text.slice(index + 2).match(/(.+)m/)![1]
+    return code == "0" ? text : text + "\x1b[0m"
 }
 
 function colorToAnsiCode(color?: string) {
-    let code = "\x1b[38;2;"
+    let code = ""
     switch (color) {
         case "black":        code += "0;0;0"; break
         case "dark_blue":    code += "0;0;170"; break
@@ -180,9 +185,8 @@ function colorToAnsiCode(color?: string) {
         case "light_purple": code += "255;85;255"; break
         case "yellow":       code += "255;255;85"; break
         case "white":        code += "255;255;255"; break
-        default:             code = "\x1b[0"
     }
-    return code + "m"
+    return code && "\x1b[38;2;" + code + "m"
 }
 
 function flattenArray<T>(array: T[][]) {
