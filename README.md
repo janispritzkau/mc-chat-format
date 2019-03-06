@@ -23,3 +23,13 @@ convert({
 }, { stripNonText: true })
 // ⮡ { text: 'Redstone Comparator', bold: true }
 ```
+
+```js
+import { format } from "mc-chat-format"
+
+format({
+    text: "§bHello §cworld",
+    bold: true
+}, { useAnsiCodes: true })
+// ⮡ '\x1b[1m\x1b[38;2;85;255;255mHello \x1b[38;2;255;85;85mworld\x1b[0m'
+```
