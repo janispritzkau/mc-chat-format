@@ -31,4 +31,4 @@ console.log(format({ text: `
 §rn §nMinecraft
 §ro §oMinecraft
 §rr §rMinecraft
-`}))
+`}, { useAnsiCodes: true }))

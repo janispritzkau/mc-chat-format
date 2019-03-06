@@ -126,9 +126,11 @@ export function formatString(component: StringComponent, useAnsiCodes = false) {
         return text + c.text + "\x1b[0m"
     }).join("")
 
+    if (!useAnsiCodes) return text
+
     const resetCodes = new Set<string>()
 
-    return text.split(/§(.)/).map((t, i) => {
+    text =  text.split(/§(.)/).map((t, i) => {
         if (i % 2 == 0) return t
         else switch (t) {
             case "l": resetCodes.add("\x1b[22m"); return "\x1b[1m"
@@ -154,7 +156,9 @@ export function formatString(component: StringComponent, useAnsiCodes = false) {
             case "f": t = "\x1b[38;2;255;255;255m"; break
         }
         return t + [...resetCodes.values()].join("")
-    }).join("") + "\x1b[0m"
+    }).join("")
+
+    return text[0].endsWith("\x1b[0m") ? text : text + "\x1b[0m"
 }
 
 function colorToAnsiCode(color?: string) {
