@@ -1,6 +1,6 @@
 # mc-chat-format
 
-Translate and convert Minecraft's chat componenets to a string.
+Translate and convert Minecraft's chat components into plain text or a string component.
 
 ```js
 import { format, convert, flatten } from "mc-chat-format"
