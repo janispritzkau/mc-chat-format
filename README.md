@@ -1,4 +1,6 @@
-# Minecraft Chat Formatter
+# mc-chat-format
+
+Translate and convert Minecraft's chat componenets to a string.
 
 ```js
 import { format, convert, flatten } from "mc-chat-format"
@@ -18,10 +20,6 @@ convert({
     insertion: "Test"
 }, { stripNonText: true })
 // ⮡ { text: 'Redstone Comparator', bold: true }
-```
-
-```js
-import { format } from "mc-chat-format"
 
 format({
     text: "§bHello §cworld",
