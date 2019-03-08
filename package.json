@@ -1,6 +1,6 @@
 {
   "name": "mc-chat-format",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Translate and convert Minecraft's chat components into plain text or a string component.",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "author": "Janis Pritzkau",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^11.9.4",
-    "typescript": "^3.3.3"
+    "@types/node": "^11.10.5",
+    "typescript": "^3.3.3333"
   }
 }
