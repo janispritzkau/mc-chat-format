@@ -53,7 +53,6 @@ export function format(component: Component, options: FormatOptions = {}) {
 interface ConvertOptions {
     translation?: Translation
     stripNonText?: boolean
-    strict?: boolean
 }
 
 /**
@@ -62,7 +61,6 @@ interface ConvertOptions {
 */
 export function convert(component: Component, options: ConvertOptions = {}): StringComponent {
     if (!options.translation) options.translation = defaultTranslation
-    if (options.strict == null) options.strict = true
 
     if (typeof component == "string") return { text: component }
 
@@ -77,11 +75,10 @@ export function convert(component: Component, options: ConvertOptions = {}): Str
     }
 
     if ("translate" in component) {
-        const { translate, with: _with, ...rest } = component
+        let { translate, with: _with, ...rest } = component
 
         const translation = options.translation[translate]
-        if (!translation) if (options.strict) throw new Error(`Couldn't find translation for ${translate}`)
-        else return { text: "[Missing translation]", ...rest }
+        if (!translation) return { text: translate, ...rest }
 
         const match = translation.match(/%([0-9]\$)?s/g)
         if (!match) return { text: translation, ...rest }
@@ -90,8 +87,11 @@ export function convert(component: Component, options: ConvertOptions = {}): Str
 
         const parts = translation.split(/%([0-9]\$)?s/)
         const extra: Component[] = parts.map((x, i) => {
-            if (i % 2 == 0) return { text: x }
-            else return convert(_with![order[(i / 2) | 0]], options)
+            if (i % 2 == 0) {
+                return { text: x }
+            } else {
+                return convert(_with ? _with![order[(i / 2) | 0]] : "", options)
+            }
         }).filter(x => x.text.length > 0 || x.extra)
 
         if (rest.extra) extra.push(...rest.extra)
@@ -102,7 +102,7 @@ export function convert(component: Component, options: ConvertOptions = {}): Str
     }
 }
 
-/** Flattens a nested `StringComponent` to an array. */
+/** Flattens a nested `StringComponent`. */
 export function flatten(component: StringComponent): StringComponent[] {
     const { text, extra, ...rest } = component
     const array = [{ text, ...rest }]
