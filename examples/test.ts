@@ -1,4 +1,4 @@
-import { format } from "../lib"
+import { format, flatten } from ".."
 
 console.log(format({
     extra:
@@ -32,3 +32,9 @@ console.log(format({ text: `
 §ro §oMinecraft
 §rr §rMinecraft
 `}, { useAnsiCodes: true }))
+
+console.log(flatten({ text: "", bold: true, extra: [
+    { text: "Hello ", extra: [
+        { text: "world!", bold: false, italic: true }
+    ] }
+] }))

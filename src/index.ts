@@ -107,9 +107,14 @@ export function flatten(component: StringComponent): StringComponent[] {
     const { text, extra, ...rest } = component
     const array = [{ text, ...rest }]
 
-    if (extra) array.push(...flattenArray(extra.map(x => flatten(<any>x).map(x => ({
-        ...x, ...rest, ...x
-    })))))
+    if (extra) array.push(
+        ...flattenArray(extra.map(c => {
+            if (typeof c == "string") return [{ text: c, ...rest }]
+            if (!('text' in c)) throw new Error("Not a StringComponent")
+
+            return flatten(c).map(c => ({ ...c, ...rest, ...c }))
+        }))
+    )
 
     return array
 }
