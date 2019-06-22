@@ -53,6 +53,7 @@ export function format(component: Component, options: FormatOptions = {}) {
 interface ConvertOptions {
     translation?: Translation
     stripNonText?: boolean
+    keepOld?: boolean
 }
 
 /**
@@ -62,7 +63,9 @@ interface ConvertOptions {
 export function convert(component: Component, options: ConvertOptions = {}): StringComponent {
     if (!options.translation) options.translation = defaultTranslation
 
-    if (typeof component == "string") return { text: component }
+    if (typeof component == "string") {
+        return options.keepOld ? { text: component } : convertOld(component)
+    }
 
     if (component.extra) {
         component.extra = component.extra.map(x => convert(x, options))
@@ -97,9 +100,52 @@ export function convert(component: Component, options: ConvertOptions = {}): Str
         if (rest.extra) extra.push(...rest.extra)
 
         return { text: "", ...rest, extra }
-    } else {
+    } else if (options.keepOld) {
         return component
+    } else {
+        return { ...component, ...convertOld(component.text) }
     }
+}
+
+/**
+ * Converts a string formatted using the old formatting scheme
+ * to the current JSON chat system.
+*/
+export function convertOld(text: string): StringComponent {
+    let c: StringComponent = { text: "" }
+    const extra = []
+
+    for (const [i, t] of text.split(/§(.)/).entries()) {
+        if (i == 0) c.text = t
+        else if (i % 2 == 0) extra.push({ ...c, text: t })
+        else switch (t) {
+            case "k": c.obfuscated = true; break
+            case "l": c.bold = true; break
+            case "m": c.strikethrough = true; break
+            case "n": c.underlined = true; break
+            case "o": c.bold = true; break
+            case "r": c = { text: c.text }; break
+            case "0": c.color = "black"; break
+            case "1": c.color = "dark_blue"; break
+            case "2": c.color = "dark_green"; break
+            case "3": c.color = "dark_aqua"; break
+            case "4": c.color = "dark_red"; break
+            case "5": c.color = "dark_purple"; break
+            case "6": c.color = "gold"; break
+            case "7": c.color = "gray"; break
+            case "8": c.color = "dark_gray"; break
+            case "9": c.color = "blue"; break
+            case "a": c.color = "green"; break
+            case "b": c.color = "aqua"; break
+            case "c": c.color = "red"; break
+            case "d": c.color = "light_purple"; break
+            case "e": c.color = "yellow"; break
+            case "f": c.color = "white"; break
+        }
+    }
+    c = { text: c.text }
+    if (extra.length > 0) c.extra = extra
+    return c
 }
 
 /** Flattens a nested `StringComponent`. */

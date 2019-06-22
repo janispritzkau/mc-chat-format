@@ -1,4 +1,4 @@
-import { format, flatten } from ".."
+import { format, flatten, convert } from "../src"
 
 console.log(format({
     extra:
@@ -18,13 +18,6 @@ console.log(format({
 }))
 
 console.log(format({ text: `
-§nMinecraft Formatting
-
-§r§00 §11 §22 §33
-§44 §55 §66 §77
-§88 §99 §aa §bb
-§cc §dd §ee §ff
-
 §r§0k §kMinecraft
 §rl §lMinecraft
 §rm §mMinecraft
@@ -38,3 +31,8 @@ console.log(flatten({ text: "", bold: true, extra: [
         { text: "world!", bold: false, italic: true }
     ] }
 ] }))
+
+console.log(convert({
+    text: "§00§11§22§33§44§55§66§77§88§99§aa§bb§cc§dd§ee§ff",
+    underlined: true
+}))
