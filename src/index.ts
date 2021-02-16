@@ -100,11 +100,16 @@ export function convert(component: Component, options: ConvertOptions = {}): Str
         if (rest.extra) extra.push(...rest.extra)
 
         return { text: "", ...rest, extra }
-    } else if (options.keepOld) {
-        return component
-    } else {
-        return { ...component, ...convertOld(component.text) }
     }
+
+    if (!options.keepOld) {
+        const { text, extra } = convertOld(component.text)
+        component.text = text
+        if (extra && component.extra) component.extra = [...extra, ...component.extra]
+        else if (extra && !component.extra) component.extra = extra
+    }
+
+    return component
 }
 
 /**
@@ -116,9 +121,11 @@ export function convertOld(text: string): StringComponent {
     const extra = []
 
     for (const [i, t] of text.split(/§(.)/).entries()) {
-        if (i == 0) c.text = t
-        else if (i % 2 == 0) extra.push({ ...c, text: t })
-        else switch (t) {
+        if (i == 0) {
+            c.text = t
+        } else if (i % 2 == 0) {
+            if (t.length != 0) extra.push({ ...c, text: t })
+        } else switch (t) {
             case "k": c.obfuscated = true; break
             case "l": c.bold = true; break
             case "m": c.strikethrough = true; break
@@ -181,7 +188,7 @@ export function formatString(component: StringComponent, useAnsiCodes = false) {
 
     const resetCodes = new Set<string>()
 
-    text =  text.split(/§(.)/).map((t, i) => {
+    text = text.split(/§(.)/).map((t, i) => {
         if (i % 2 == 0) return t
         else switch (t) {
             case "l": resetCodes.add("\x1b[22m"); return "\x1b[1m"
